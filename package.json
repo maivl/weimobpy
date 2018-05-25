@@ -1,0 +1,23 @@
+{
+  "name": "weimobpy",
+  "version": "1.0.0",
+  "description": "A enhanced wepy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "weimobpy": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://stash.weimob.com/scm/h/weimobpy.git"
+  },
+  "keywords": [
+    "wepy",
+    "weimob"
+  ],
+  "author": "eric@weimob.com",
+  "license": "ISC",
+  "dependencies": {}
+}
