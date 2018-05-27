@@ -52,6 +52,8 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var watchReady = false;
 var preventDup = {};
 
@@ -118,29 +120,51 @@ exports.default = {
                 return reg.test(v);
             });
 
-            files.forEach(function (f) {
-                var opath = _path2.default.parse(_path2.default.join(_util2.default.currentDir, src, f));
-                var content = _util2.default.readFile(opath);
+            files.forEach(function () {
+                var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(f) {
+                    var opath, content, wpy, links;
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                        while (1) {
+                            switch (_context.prev = _context.next) {
+                                case 0:
+                                    opath = _path2.default.parse(_path2.default.join(_util2.default.currentDir, src, f));
+                                    content = _util2.default.readFile(opath);
+                                    _context.next = 4;
+                                    return _compileWpy2.default.resolveWpy(opath);
 
-                var wpy = _compileWpy2.default.resolveWpy(opath);
-                var links = {};
+                                case 4:
+                                    wpy = _context.sent;
+                                    links = {};
 
-                ['script', 'template', 'style'].forEach(function (t) {
-                    if (wpy[t]) {
-                        if (wpy[t].link === true) {
-                            _this2._cacheReferences[wpy[t].src] = _this2._cacheReferences[wpy[t].src] || [];
-                            _this2._cacheReferences[wpy[t].src].push(f);
-                        } else if (wpy[t].link === undefined && wpy[t].length) {
-                            wpy[t].forEach(function (s) {
-                                if (s.link) {
-                                    _this2._cacheReferences[s.src] = _this2._cacheReferences[s.src] || [];
-                                    _this2._cacheReferences[s.src].push(f);
-                                }
-                            });
+
+                                    ['script', 'template', 'style'].forEach(function (t) {
+                                        if (wpy[t]) {
+                                            if (wpy[t].link === true) {
+                                                _this2._cacheReferences[wpy[t].src] = _this2._cacheReferences[wpy[t].src] || [];
+                                                _this2._cacheReferences[wpy[t].src].push(f);
+                                            } else if (wpy[t].link === undefined && wpy[t].length) {
+                                                wpy[t].forEach(function (s) {
+                                                    if (s.link) {
+                                                        _this2._cacheReferences[s.src] = _this2._cacheReferences[s.src] || [];
+                                                        _this2._cacheReferences[s.src].push(f);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
+                                case 7:
+                                case 'end':
+                                    return _context.stop();
+                            }
                         }
-                    }
-                });
-            });
+                    }, _callee, _this2);
+                }));
+
+                return function (_x) {
+                    return _ref.apply(this, arguments);
+                };
+            }());
         }
         return this._cacheReferences[filepath] || [];
     },

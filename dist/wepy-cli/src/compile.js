@@ -89,11 +89,11 @@ export default {
 
             files = files.filter((v) => reg.test(v));
 
-            files.forEach((f) => {
+            files.forEach(async (f) => {
                 let opath = path.parse(path.join(util.currentDir, src, f));
                 let content = util.readFile(opath);
 
-                let wpy = cWpy.resolveWpy(opath);
+                let wpy = await cWpy.resolveWpy(opath);
                 let links = {};
 
                 ['script', 'template', 'style'].forEach(t => {

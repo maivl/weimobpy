@@ -94,7 +94,7 @@ export default {
         return requires;
     },
 
-    resolveWpy (xml, opath) {
+    async resolveWpy (xml, opath) {
         let config = util.getConfig();
         let filepath;
 
@@ -215,9 +215,26 @@ export default {
         rst.template.type = rst.template.type || 'wxml';
         rst.script.type = rst.script.type || 'babel';
 
+
+        let compiler = loader.loadCompiler(rst.script.type);
+
+        if (compiler) {
+            await compiler(rst.script.code, config.compilers[rst.script.type] || {}).then(compileResult => {
+                let sourceMap;
+                let code;
+                if (typeof(compileResult) === 'string') {
+                    code = compileResult;
+                } else {
+                    sourceMap = compileResult.map;
+                    code = compileResult.code;
+                }
+                rst.scropt.code = code;
+            });
+        }
+
         // get config
         (() => {
-            let match = rst.script.code.match(/[\s\r\n]config\s*=[\s\r\n]*/);
+            let match = rst.script.code.match(/this\.config\s*=[\s\r\n]*/);
             match = match ? match[0] : undefined;
 
             rst.config = match ? this.grabConfigFromScript(rst.script.code, rst.script.code.indexOf(match) + match.length) : false;
@@ -455,7 +472,7 @@ export default {
         eslint(filepath);
     },
 
-    compile (opath) {
+    async compile (opath) {
         let filepath = path.join(opath.dir, opath.base);
         let src = cache.getSrc();
         let dist = cache.getDist();
@@ -484,7 +501,7 @@ export default {
             this.lint(filepath);
         }
 
-        let wpy = this.resolveWpy(opath);
+        let wpy = await this.resolveWpy(opath);
 
         if (!wpy) {
             return;
