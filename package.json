@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "weimobpy": "./dist/wepy-cli/wepy.js"
+    "weimobpy": "./dist/wepy-cli/bin/wepy.js"
   },
   "repository": {
     "type": "git",
