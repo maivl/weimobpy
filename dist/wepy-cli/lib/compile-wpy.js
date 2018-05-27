@@ -56,10 +56,14 @@ var _resolve2 = _interopRequireDefault(_resolve);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var globalLocator = {};
+
 exports.default = {
     _cacheWpys: {},
     createParser: function createParser(opath) {
-        return new _xmldom.DOMParser({ errorHandler: {
+        return new _xmldom.DOMParser({
+            locator: globalLocator,
+            errorHandler: {
                 warning: function warning(x) {
                     if (x.indexOf('missed value!!') > -1) {} else {
                         if (!opath) {
@@ -76,7 +80,8 @@ exports.default = {
                         _util2.default.error('ERROR IN : ' + _path2.default.relative(_util2.default.currentDir, _path2.default.join(opath.dir, opath.base)) + '\n' + x);
                     }
                 }
-            } });
+            }
+        });
     },
     grabConfigFromScript: function grabConfigFromScript(str, n) {
         var stash = [],

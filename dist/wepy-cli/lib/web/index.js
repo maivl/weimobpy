@@ -119,27 +119,43 @@ exports.default = {
 
             var scripts = [];
 
-            if (platform === 'qq') {
-                scripts.push({
+            var DEFAULT_INJECT = {
+                qq: [{
                     pos: 'head',
                     src: '//i.gtimg.cn/channel/lib/components/adapt/adapt-3.0.js?_bid=2106&max_age=86400000'
-                });
-                scripts.push({
+                }, {
                     pos: 'head',
                     src: '//open.mobile.qq.com/sdk/qqapi.js?_bid=152'
-                });
-            } else if (platform === 'wechat') {
-                scripts.push({
+                }],
+                wechat: [{
                     pos: 'head',
                     src: '//res.wx.qq.com/open/js/jweixin-1.2.0.js'
-                });
+                }],
+                main: {
+                    pos: 'head',
+                    src: this.replaceParams(_path2.default.relative(_path2.default.parse(target).dir, webConfig.jsOutput), { platform: platform })
+                }
+            };
+            if (webConfig.injectScripts === undefined) {
+                webConfig.injectScripts = DEFAULT_INJECT;
             }
+            if (webConfig.injectScripts !== false) {
+                var pscript = webConfig.injectScripts[platform] || [];
+                if (!Array.isArray(pscript)) {
+                    pscript = [pscript];
+                }
+                scripts = scripts.concat(pscript);
 
-            scripts.push({
-                pos: 'body',
-                src: this.replaceParams(_path2.default.relative(_path2.default.parse(target).dir, webConfig.jsOutput), { platform: platform })
-            });
-            this.injectScript(node, scripts);
+                var mscript = webConfig.injectScripts.main || [];
+                if (!Array.isArray(mscript)) {
+                    mscript = [mscript];
+                }
+                scripts = scripts.concat(mscript);
+
+                if (scripts.length) {
+                    this.injectScript(node, scripts);
+                }
+            }
 
             _util2.default.output('写入', target);
             _util2.default.writeFile(target, node.toString(true));
@@ -246,7 +262,7 @@ exports.default = {
 
                 code += '/***** module ' + i + ' start *****/\n';
                 code += '/***** ' + p + ' *****/\n';
-                code += 'function(module, exports, __wepy_require) {';
+                code += 'function(module, exports, __wepy_require, process, global) {';
                 if (v.type === 'script') {
                     code += v.source.script.code + '\n';
                     if (v.source.template && v.source.template.id !== undefined) {
@@ -269,7 +285,7 @@ exports.default = {
                 code += '/***** module ' + i + ' end *****/\n\n\n';
             });
 
-            code = '\n(function(modules) { \n   // The module cache\n   var installedModules = {};\n   // The require function\n   function __webpack_require__(moduleId) {\n       // Check if module is in cache\n       if(installedModules[moduleId])\n           return installedModules[moduleId].exports;\n       // Create a new module (and put it into the cache)\n       var module = installedModules[moduleId] = {\n           exports: {},\n           id: moduleId,\n           loaded: false\n       };\n       // Execute the module function\n       modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n       // Flag the module as loaded\n       module.loaded = true;\n       // Return the exports of the module\n       return module.exports;\n   }\n   // expose the modules object (__webpack_modules__)\n   __webpack_require__.m = modules;\n   // expose the module cache\n   __webpack_require__.c = installedModules;\n   // __webpack_public_path__\n   __webpack_require__.p = "/";\n   // Load entry module and return exports\n   $$WEPY_APP_PLATFORM_PLACEHOLDER$$\n   return __webpack_require__(' + appWpy.script.id + ');\n})([\n' + code + '\n]);\n';
+            code = '\n(function(modules) {\n   var process = {};\n   var global = window;\n   process.env = {\n    NODE_ENV: \'' + process.env.NODE_ENV + '\'\n   };\n   // The module cache\n   var installedModules = {};\n   // The require function\n   function __webpack_require__(moduleId) {\n       // Check if module is in cache\n       if(installedModules[moduleId])\n           return installedModules[moduleId].exports;\n       // Create a new module (and put it into the cache)\n       var module = installedModules[moduleId] = {\n           exports: {},\n           id: moduleId,\n           loaded: false\n       };\n       // Execute the module function\n       modules[moduleId].call(module.exports, module, module.exports, __webpack_require__, process, global);\n       // Flag the module as loaded\n       module.loaded = true;\n       // Return the exports of the module\n       return module.exports;\n   }\n   // expose the modules object (__webpack_modules__)\n   __webpack_require__.m = modules;\n   // expose the module cache\n   __webpack_require__.c = installedModules;\n   // __webpack_public_path__\n   __webpack_require__.p = "/";\n   // Load entry module and return exports\n   $$WEPY_APP_PLATFORM_PLACEHOLDER$$\n   return __webpack_require__(' + appWpy.script.id + ');\n})([\n' + code + '\n]);\n';
             var config = {},
                 routes = {},
                 k = void 0;
@@ -292,6 +308,7 @@ exports.default = {
 
             webConfig.jsOutput = webConfig.jsOutput || _path2.default.join(dist, 'dist.js');
             var target = _this.replaceParams(_path2.default.join(_util2.default.currentDir, webConfig.jsOutput), { platform: platform });
+
             var plg = new _loader2.default.PluginHelper(config.plugins, {
                 type: 'dist',
                 code: code,
@@ -317,6 +334,9 @@ exports.default = {
 
         var singleFile = false;
 
+        if (typeof wpys === 'string') {
+            wpys = { path: wpys };
+        }
         if (wpys.path) {
             if (mmap.getPending(wpys.path)) return Promise.resolve(0);
 

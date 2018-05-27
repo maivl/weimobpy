@@ -12,6 +12,7 @@ var cachePath = '.wepycache';
 var _buildCache = null;
 var _cacheChanged = false;
 var _filelistCache = {};
+var _cssDeps = {};
 
 exports.default = {
     setParams: function setParams(v) {
@@ -96,5 +97,16 @@ exports.default = {
     checkBuildCache: function checkBuildCache(file) {
         var cache = this.getBuildCache();
         return cache[file] && cache[file] === _util2.default.getModifiedTime(file);
+    },
+    addCssDep: function addCssDep(file, context) {
+        if (!_cssDeps[file]) {
+            _cssDeps[file] = [];
+        }
+        if (_cssDeps[file].indexOf(context) === -1) {
+            _cssDeps[file].push(context);
+        }
+    },
+    getCssDep: function getCssDep(file) {
+        return _cssDeps[file] || [];
     }
 };

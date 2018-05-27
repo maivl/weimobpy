@@ -50,7 +50,7 @@ exports.default = {
 
         var depences = [];
 
-        wpy.script.code = wpy.script.code.replace(/require\(['"]([\w\d_\-\.\/@]+)['"]\)/ig, function (match, lib) {
+        wpy.script.code = wpy.script.code.replace(/(^|[^\.\w])require\(['"]([\w\d_\-\.\/@]+)['"]\)/ig, function (match, char, lib) {
             if (lib === 'wepy') lib = 'wepy-web';
 
             var resolved = lib;
@@ -63,7 +63,7 @@ exports.default = {
             lib = _resolve2.default.resolveAlias(lib, opath);
 
             if (lib === 'false') {
-                return '{}';
+                return char + '{}';
             } else if (_path2.default.isAbsolute(lib)) {
                 source = lib;
             } else if (lib[0] === '.') {
@@ -81,7 +81,7 @@ exports.default = {
                     source = _path2.default.join(opath.dir, lib);
                 }
                 npmInfo = wpy.npm;
-            } else if (lib.indexOf('/') === -1 || lib.indexOf('/') === lib.length - 1) {
+            } else if (lib.indexOf('/') === -1 || lib.indexOf('/') === lib.length - 1 || lib[0] === '@' && lib.indexOf('/') !== -1 && lib.lastIndexOf('/') === lib.indexOf('/')) {
                 if (wpy.npm && wpy.npm.pkg._activeFields.length) {
                     var _resolvedLib = _resolve2.default.resolveSelfFields(wpy.npm.dir, wpy.npm.pkg, lib);
                     lib = _resolvedLib ? _resolvedLib : lib;
@@ -113,8 +113,26 @@ exports.default = {
                 lib += _path2.default.sep + resolvedFile;
                 npmInfo = o;
             } else {
-                source = _path2.default.join(wpy.npm.modulePath, lib);
-                npmInfo = wpy.npm;
+                var requieInfo = lib.split('/');
+                var mainFile = _resolve2.default.getMainFile(requieInfo[0]);
+
+                if (!mainFile) {
+                    throw Error('找不到模块: ' + lib + '\n被依赖于: ' + _path2.default.join(opath.dir, opath.base) + '。\n请尝试手动执行 npm install ' + lib + ' 进行安装。');
+                }
+                npmInfo = {
+                    lib: requieInfo[0],
+                    dir: mainFile.dir,
+                    modulePath: mainFile.modulePath,
+                    file: mainFile.file,
+                    pkg: mainFile.pkg
+                };
+                requieInfo.shift();
+
+                source = _path2.default.join(mainFile.dir, requieInfo.join('/'));
+
+                if (_path2.default.extname(mainFile.file) === '.wpy') {
+                    source += '.wpy';
+                }
             }
 
             if (_path2.default.extname(source)) {
@@ -133,12 +151,13 @@ exports.default = {
                 } else if (_util2.default.isDir(source) && _util2.default.isFile(source + _path2.default.sep + 'index.js')) {
                     source += _path2.default.sep + 'index.js';
                 } else {
+                    throw 'Missing files: ' + resolved + ' in ' + wpy.script.src;
                     source = null;
                 }
             }
 
             if (!source) {
-                throw '找不到文件: ' + source;
+                throw 'Missing files: ' + resolved + ' in ' + _path2.default.join(opath.dir, opath.base);
             }
 
             mmap.add(source);
@@ -150,7 +169,7 @@ exports.default = {
             }
             dep.id = wepyRequireId;
             depences.push(dep);
-            return '__wepy_require(' + wepyRequireId + ')';
+            return char + '__wepy_require(' + wepyRequireId + ')';
         });
         return depences;
     },
@@ -188,8 +207,10 @@ exports.default = {
                     _index2.default.addPage(wpy.path, wpy);
                 } else if (wpy.type === 'app') {
                     if (matchs) {
+                        var appConfig = JSON.stringify(config.appConfig || {});
+
                         wpy.script.code = wpy.script.code.replace(/exports\.default\s*=\s*(\w+);/i, '');
-                        wpy.script.code += '\nrequire(\'wepy\').default.$createApp(' + defaultExport + ', $$WEPY_APP_PARAMS_PLACEHOLDER$$);\n';
+                        wpy.script.code += '\nrequire(\'wepy\').default.$createApp(' + defaultExport + ', $$WEPY_APP_PARAMS_PLACEHOLDER$$, ' + appConfig + ');\n';
                     }
                 }
             }

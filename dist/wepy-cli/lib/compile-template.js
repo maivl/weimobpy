@@ -212,19 +212,19 @@ exports.default = {
         arr.push('{{' + val + '}}');
         return this.getMappingIndex(mapping.parent, arr);
     },
-    fixRelativePath: function fixRelativePath(node, template, parentTemplate) {
-        if ((node.nodeName === 'wxs' || node.nodeName === 'image') && parentTemplate) {
+    fixRelativePath: function fixRelativePath(node, template, rootTemplate) {
+        if ((node.nodeName === 'wxs' || node.nodeName === 'image') && rootTemplate) {
             var src = node.getAttribute('src');
             if (src[0] === '.') {
                 var realpath = _path2.default.join(_path2.default.parse(template.src).dir, node.getAttribute('src'));
-                var fixedpath = _path2.default.relative(_path2.default.parse(parentTemplate.src).dir, realpath);
+                var fixedpath = _path2.default.relative(_path2.default.parse(rootTemplate.src).dir, realpath);
                 fixedpath = fixedpath.replace(/\\/g, '/');
                 node.setAttribute('src', fixedpath);
             }
         }
         return node;
     },
-    updateBind: function updateBind(node, template, parentTemplate, prefix) {
+    updateBind: function updateBind(node, template, rootTemplate, prefix) {
         var _this2 = this;
 
         var ignores = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
@@ -234,7 +234,7 @@ exports.default = {
         var config = _cache2.default.getConfig();
         var tagprefix = config.output === 'ant' ? 'a' : 'wx';
 
-        node = this.fixRelativePath(node, template, parentTemplate);
+        node = this.fixRelativePath(node, template, rootTemplate);
 
         if (template.wxs) {
             for (var k in template.wxs) {
@@ -279,7 +279,7 @@ exports.default = {
                     }
                 }
 
-                if (config.output !== 'ant' && (attr.name.indexOf('bind') === 0 || attr.name.indexOf('catch') === 0) || config.output === 'ant' && (attr.name.indexOf('on') === 0 || attr.name.indexOf('catch') === 0)) {
+                if (config.output !== 'ant' && (attr.name.indexOf('bind') === 0 || attr.name.indexOf('catch') === 0 || attr.name.indexOf('capture') === 0) || config.output === 'ant' && (attr.name.indexOf('on') === 0 || attr.name.indexOf('catch') === 0)) {
                     if (mapping.items && mapping.items.length > 0) {
                         var upper = prefix.split(PREFIX);
                         upper.pop();
@@ -307,7 +307,7 @@ exports.default = {
                 }
             });
             [].slice.call(node.childNodes || []).forEach(function (child) {
-                _this2.updateBind(child, template, parentTemplate, prefix, ignores, mapping);
+                _this2.updateBind(child, template, rootTemplate, prefix, ignores, mapping);
             });
         }
         return node;
@@ -344,7 +344,7 @@ exports.default = {
         });
         return node;
     },
-    compileXML: function compileXML(node, template, parentTemplate, prefix, childNodes) {
+    compileXML: function compileXML(node, template, rootTemplate, prefix, childNodes) {
         var _this3 = this;
 
         var comAppendAttribute = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
@@ -355,7 +355,7 @@ exports.default = {
         var tagprefix = config.output === 'ant' ? 'a' : 'wx';
         this.updateSlot(node, childNodes);
 
-        this.updateBind(node, template, parentTemplate, prefix, {}, propsMapping);
+        this.updateBind(node, template, rootTemplate, prefix, {}, propsMapping);
 
         if (node && node.documentElement) {
             var topNode = node.documentElement;
@@ -447,7 +447,7 @@ exports.default = {
                     _util2.default.error('找不到组件：' + com.tagName, '\n请尝试使用 npm install ' + com.tagName + ' 安装', '错误');
                 } else {
                     var comWpy = _compileWpy2.default.resolveWpy(src);
-                    var newnode = _this3.compileXML(_this3.getTemplate(comWpy.template.code), comWpy.template, template, _this3.getPrefix(prefix ? prefix + '$' + comid : '' + comid), com.childNodes, comAttributes, template.props[comid]);
+                    var newnode = _this3.compileXML(_this3.getTemplate(comWpy.template.code), comWpy.template, rootTemplate || template, _this3.getPrefix(prefix ? prefix + '$' + comid : '' + comid), com.childNodes, comAttributes, template.props[comid]);
                     node.replaceChild(newnode, com);
                 }
             });
@@ -487,7 +487,7 @@ exports.default = {
                 _util2.default.error('找不到组件：' + definePath, '\n请尝试使用 npm install ' + definePath + ' 安装', '错误');
             } else {
                 var comWpy = _compileWpy2.default.resolveWpy(src);
-                var newnode = _this3.compileXML(_this3.getTemplate(comWpy.template.code), comWpy.template, template, _this3.getPrefix(prefix ? prefix + '$' + comid : '' + comid), com.childNodes, comAttributes);
+                var newnode = _this3.compileXML(_this3.getTemplate(comWpy.template.code), comWpy.template, rootTemplate || template, _this3.getPrefix(prefix ? prefix + '$' + comid : '' + comid), com.childNodes, comAttributes);
 
                 node.replaceChild(newnode, com);
             }

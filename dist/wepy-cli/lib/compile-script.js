@@ -43,7 +43,7 @@ exports.default = {
         var config = _cache2.default.getConfig();
         var wpyExt = params.wpyExt;
 
-        return code.replace(/require\(['"]([\w\d_\-\.\/@]+)['"]\)/ig, function (match, lib) {
+        return code.replace(/(^|[^\.\w])require\(['"]([\w\d_\-\.\/@]+)['"]\)/ig, function (match, char, lib) {
             var npmInfo = opath.npm;
 
             if (lib === './_wepylogs.js') {
@@ -61,7 +61,7 @@ exports.default = {
             }
             lib = _resolve2.default.resolveAlias(lib, opath);
             if (lib === 'false') {
-                return '{}';
+                return char + '{}';
             } else if (_path2.default.isAbsolute(lib)) {
                 source = lib;
                 target = _util2.default.getDistPath(source);
@@ -153,7 +153,7 @@ exports.default = {
             } else if (_util2.default.isFile(source)) {
                 ext = '';
             } else {
-                throw '找不到文件: ' + source;
+                throw 'Missing files: ' + resolved + ' in ' + _path2.default.join(opath.dir, opath.base);
             }
             source += ext;
             target += ext;
@@ -189,7 +189,7 @@ exports.default = {
                 resolved = _path2.default.relative(_util2.default.getDistPath(opath, opath.ext, src, dist), target);
             }
             resolved = resolved.replace(/\\/g, '/').replace(/^\.\.\//, './');
-            return 'require(\'' + resolved + '\')';
+            return char + 'require(\'' + resolved + '\')';
         });
     },
     npmHack: function npmHack(opath, code) {

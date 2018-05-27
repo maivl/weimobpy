@@ -327,6 +327,15 @@ exports.default = {
                 } else {
                     files = refs;
                 }
+
+                var fullpath = _path2.default.join(current, src, file);
+                var cssDeps = _cache2.default.getCssDep(fullpath);
+                if (cssDeps.length) {
+                    var cssDepfiles = cssDeps.map(function (v) {
+                        return _path2.default.relative(_path2.default.join(current, src), v);
+                    });
+                    files = refs.length === 0 ? cssDepfiles : files.concat(cssDepfiles);
+                }
             } else if (file.indexOf('components') !== -1) {
                 var parents = this.findParents(file);
                 files = parents.concat([file]);

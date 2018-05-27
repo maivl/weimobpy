@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -92,7 +94,20 @@ exports.default = {
                 throw '\u672A\u53D1\u73B0\u76F8\u5173 ' + lang + ' \u7F16\u8BD1\u5668\u914D\u7F6E\uFF0C\u8BF7\u68C0\u67E5wepy.config.js\u6587\u4EF6\u3002';
             }
 
-            var p = compiler(content, options || {}, filepath).then(function (css) {
+            options.supportObject = true;
+            var p = compiler(content, options || {}, filepath).then(function (compiled) {
+                var css = void 0;
+                if ((typeof compiled === 'undefined' ? 'undefined' : _typeof(compiled)) === 'object') {
+                    css = compiled.css;
+                    if (compiled.imports && compiled.imports.length) {
+                        compiled.imports.forEach(function (v) {
+                            _cache2.default.addCssDep(v, _path2.default.join(opath.dir, opath.base));
+                        });
+                    }
+                } else {
+                    css = compiled;
+                }
+
                 if (scoped) {
                     return (0, _scoped2.default)(moduleId, css).then(function (cssContent) {
                         return cssContent;
