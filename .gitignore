@@ -1,0 +1,9 @@
+node_modules/
+npm-debug.log
+lib/
+demo/
+.vscode
+lerna-debug.log
+.DS_Store
+.idea
+/yarn.lock
