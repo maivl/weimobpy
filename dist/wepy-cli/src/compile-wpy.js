@@ -572,7 +572,7 @@ export default {
         }
 
         if (wpy.script.code) {
-            cScript.compile(wpy.script.type, wpy.script.code, type, opath);
+            cScript.compile(wpy.script.type, wpy.script.code, type, opath, 1);
         }
     }
 };

@@ -603,7 +603,7 @@ exports.default = {
                             }
 
                             if (wpy.script.code) {
-                                _compileScript2.default.compile(wpy.script.type, wpy.script.code, type, opath);
+                                _compileScript2.default.compile(wpy.script.type, wpy.script.code, type, opath, 1);
                             }
 
                         case 19:

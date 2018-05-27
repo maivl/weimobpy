@@ -216,9 +216,7 @@ exports.default = {
         }
         return code;
     },
-    compile: function compile(lang, code, type, opath) {
-        var _this2 = this;
-
+    compile: function compile(lang, code, type, opath, complied) {
         var config = _util2.default.getConfig();
         src = _cache2.default.getSrc();
         dist = _cache2.default.getDist();
@@ -229,6 +227,11 @@ exports.default = {
             if (code === null) {
                 throw '打开文件失败: ' + _path2.default.join(opath.dir, opath.base);
             }
+        }
+
+        if (complied) {
+            afterCompiled();
+            return;
         }
 
         var compiler = _loader2.default.loadCompiler(lang);
@@ -245,6 +248,12 @@ exports.default = {
                 sourceMap = compileResult.map;
                 code = compileResult.code;
             }
+            afterCompiled();
+        }).catch(function (e) {
+            _util2.default.error(e);
+        });
+
+        function afterCompiled() {
             if (type !== 'npm') {
                 if (type === 'page' || type === 'app') {
                     code = code.replace(/exports\.default\s*=\s*(\w+);/ig, function (m, defaultExport) {
@@ -267,7 +276,7 @@ exports.default = {
                 }
             }
 
-            code = _this2.resolveDeps(code, type, opath);
+            code = this.resolveDeps(code, type, opath);
 
             if (type === 'npm' && opath.ext === '.wpy') {
                 _compileWpy2.default.compile(opath);
@@ -278,15 +287,8 @@ exports.default = {
             if (type !== 'npm') {
                 target = _util2.default.getDistPath(opath, 'js');
             } else {
-                code = _this2.npmHack(opath, code);
+                code = this.npmHack(opath, code);
                 target = _path2.default.join(npmPath, _path2.default.relative(opath.npm.modulePath, _path2.default.join(opath.dir, opath.base)));
-            }
-
-            if (sourceMap) {
-                sourceMap.sources = [opath.name + '.js'];
-                sourceMap.file = opath.name + '.js';
-                var Base64 = require('js-base64').Base64;
-                code += '\r\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + Base64.encode(JSON.stringify(sourceMap));
             }
 
             var plg = new _loader2.default.PluginHelper(config.plugins, {
@@ -303,8 +305,6 @@ exports.default = {
             });
 
             _cache2.default.saveBuildCache();
-        }).catch(function (e) {
-            _util2.default.error(e);
-        });
+        }
     }
 };
