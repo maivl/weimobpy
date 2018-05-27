@@ -1,3 +1,4 @@
 [submodule "wepy"]
 	path = wepy
 	url = https://github.com/maivl/wepy.git
+	branch = 1.7.x
