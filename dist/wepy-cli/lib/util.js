@@ -145,7 +145,7 @@ var utils = {
         }
         var lib = com,
             main = null;
-        if (com.indexOf(_path2.default.sep) > 0) {
+        if (com[0] !== '@' && com.indexOf(_path2.default.sep) > 0) {
             var sepIndex = com.indexOf(_path2.default.sep);
             lib = com.substring(0, sepIndex);
             main = com.substring(sepIndex + 1, com.length);
@@ -534,7 +534,6 @@ var utils = {
             msg = msg.replace(/\\/g, '\\\\');
             msg = msg.replace(/\u001b/g, '');
             msg = msg.replace(/\[\d+m/g, '');
-            msg = msg.replace(/`/g, '\\`');
         }
         try {
             _fs2.default.appendFileSync(file, 'console.' + type + '(`CLI\u62A5\u9519\uFF1A' + msg + '`);\r\n');

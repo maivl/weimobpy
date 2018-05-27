@@ -139,7 +139,7 @@ const utils = {
             }
         }
         let lib = com, main = null;
-        if (com.indexOf(path.sep) > 0) {
+        if (com[0] !== '@' && com.indexOf(path.sep) > 0) {
             let sepIndex = com.indexOf(path.sep);
             lib = com.substring(0, sepIndex);
             main = com.substring(sepIndex + 1, com.length);
@@ -594,7 +594,6 @@ const utils = {
             msg = msg.replace(/\\/g, '\\\\');
             msg = msg.replace(/\u001b/g, '');
             msg = msg.replace(/\[\d+m/g, '');
-            msg = msg.replace(/`/g, '\\`');
         }
         try {
             fs.appendFileSync(file, `console.${type}(\`CLI报错：${msg}\`);\r\n`);

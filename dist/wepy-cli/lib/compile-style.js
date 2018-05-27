@@ -127,7 +127,7 @@ exports.default = {
                         } else {
                             var mainFile = null;
                             var sepIndex = lib.indexOf(_path2.default.sep);
-                            if (sepIndex > 0) {
+                            if (lib[0] !== '@' && sepIndex > 0) {
                                 var tmp = lib;
                                 lib = tmp.substring(0, sepIndex);
                                 mainFile = tmp.substring(sepIndex + 1, tmp.length);

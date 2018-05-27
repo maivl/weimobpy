@@ -237,13 +237,7 @@ exports.default = {
             return;
         }
 
-        var compileConfig = Object.assign({}, config.compiler[lang] || {});
-
-        if (lang === 'typescript') {
-            compileConfig.fileName = opath.base;
-        }
-
-        compiler(code, compileConfig).then(function (compileResult) {
+        compiler(code, config.compilers[lang] || {}).then(function (compileResult) {
             var sourceMap = void 0;
             if (typeof compileResult === 'string') {
                 code = compileResult;

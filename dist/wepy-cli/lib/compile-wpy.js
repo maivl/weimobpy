@@ -536,11 +536,10 @@ function walkNode(node, moduleId) {
     if (node.childNodes) {
         [].slice.call(node.childNodes || []).forEach(function (child) {
             if (child.tagName) {
-                if (child.hasAttribute('class') || child.hasAttribute('v-bind:class.once') || child.hasAttribute(':class')) {
-                    var cls = child.getAttribute('class');
-                    child.setAttribute('class', (cls + ' ' + moduleId).trim());
-                    walkNode(child, moduleId);
-                }
+                var cls = child.getAttribute('class');
+                child.setAttribute('class', (cls + ' ' + moduleId).trim());
+
+                walkNode(child, moduleId);
             }
         });
     }
