@@ -4,7 +4,7 @@
   "description": "A enhanced wepy",
   "main": "index.js",
   "scripts": {
-    "build": "cd wepy && node ./node_modules/gulp/bin/gulp build && cp -rf ./packages ../dest",
+    "build": "cd wepy && node ./node_modules/gulp/bin/gulp build && cp -rf ./packages ../dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
