@@ -2,7 +2,9 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _path = require('path');
 
@@ -184,7 +186,7 @@ exports.default = {
         this.buildHtml(webConfig, platform);
 
         _util2.default.log('入口: ' + file, '编译');
-        if ((typeof file === 'undefined' ? 'undefined' : _typeof(file)) === 'object') {
+        if ((typeof file === 'undefined' ? 'undefined' : (0, _typeof3.default)(file)) === 'object') {
             appWpy = file;
             apppath = appWpy.script.src;
         } else {

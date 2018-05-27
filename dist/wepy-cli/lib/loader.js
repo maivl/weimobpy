@@ -2,7 +2,13 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
 var _module = require('module');
 
@@ -18,8 +24,6 @@ var _util2 = _interopRequireDefault(_util);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var relativeModules = {};
 var requiredModules = {};
 
@@ -27,7 +31,7 @@ var loadedPlugins = [];
 
 var PluginHelper = function () {
     function PluginHelper(plugins, op) {
-        _classCallCheck(this, PluginHelper);
+        (0, _classCallCheck3.default)(this, PluginHelper);
 
         this.applyPlugin(0, op);
         return true;
@@ -76,7 +80,7 @@ exports.default = {
     },
     getNodeModulePath: function getNodeModulePath(loc, relative) {
         relative = relative || _util2.default.currentDir;
-        if ((typeof _module2.default === 'undefined' ? 'undefined' : _typeof(_module2.default)) === 'object') return null;
+        if ((typeof _module2.default === 'undefined' ? 'undefined' : (0, _typeof3.default)(_module2.default)) === 'object') return null;
 
         var relativeMod = relativeModules[relative];
         var paths = [];

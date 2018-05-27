@@ -2,7 +2,9 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _path = require('path');
 
@@ -97,7 +99,7 @@ exports.default = {
             options.supportObject = true;
             var p = compiler(content, options || {}, filepath).then(function (compiled) {
                 var css = void 0;
-                if ((typeof compiled === 'undefined' ? 'undefined' : _typeof(compiled)) === 'object') {
+                if ((typeof compiled === 'undefined' ? 'undefined' : (0, _typeof3.default)(compiled)) === 'object') {
                     css = compiled.css;
                     if (compiled.imports && compiled.imports.length) {
                         compiled.imports.forEach(function (v) {

@@ -2,7 +2,9 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 exports.default = options;
 
@@ -67,7 +69,7 @@ function setDefault(opts, key, val) {
         delete opts.schema;
     }
     var prompts = opts.prompts || (opts.prompts = {});
-    if (!prompts[key] || _typeof(prompts[key]) !== 'object') {
+    if (!prompts[key] || (0, _typeof3.default)(prompts[key]) !== 'object') {
         prompts[key] = {
             'type': 'string',
             'default': val

@@ -2,7 +2,17 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var _path = require('path');
 
@@ -55,8 +65,6 @@ var _resolve = require('./resolve');
 var _resolve2 = _interopRequireDefault(_resolve);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var globalLocator = {};
 
@@ -121,9 +129,9 @@ exports.default = {
     resolveWpy: function resolveWpy(xml, opath) {
         var _this = this;
 
-        return _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+        return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
             var config, filepath, content, moduleId, rst, startlen, compiler, node;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
+            return _regenerator2.default.wrap(function _callee$(_context) {
                 while (1) {
                     switch (_context.prev = _context.next) {
                         case 0:
@@ -131,7 +139,7 @@ exports.default = {
                             filepath = void 0;
 
 
-                            if ((typeof xml === 'undefined' ? 'undefined' : _typeof(xml)) === 'object' && xml.dir) {
+                            if ((typeof xml === 'undefined' ? 'undefined' : (0, _typeof3.default)(xml)) === 'object' && xml.dir) {
                                 opath = xml;
                                 filepath = _path2.default.join(xml.dir, xml.base);
                             } else {
@@ -487,9 +495,9 @@ exports.default = {
     compile: function compile(opath) {
         var _this2 = this;
 
-        return _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+        return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
             var filepath, src, dist, wpyExt, pages, type, relative, wpy, mainPages, subPages, requires, k, tmp;
-            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            return _regenerator2.default.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:

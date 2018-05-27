@@ -2,7 +2,9 @@
 
 exports.__esModule = true;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _safe = require('colors/safe');
 
@@ -196,7 +198,7 @@ var utils = {
         return Array.isArray(obj);
     },
     isFile: function isFile(p) {
-        p = (typeof p === 'undefined' ? 'undefined' : _typeof(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
+        p = (typeof p === 'undefined' ? 'undefined' : (0, _typeof3.default)(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
         if (!_fs2.default.existsSync(p)) {
             return false;
         }
@@ -336,7 +338,7 @@ var utils = {
     },
     unlink: function unlink(p) {
         var rst = '';
-        p = (typeof p === 'undefined' ? 'undefined' : _typeof(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
+        p = (typeof p === 'undefined' ? 'undefined' : (0, _typeof3.default)(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
         try {
             rst = _fs2.default.unlinkSync(p);
         } catch (e) {
@@ -346,7 +348,7 @@ var utils = {
     },
     readFile: function readFile(p) {
         var rst = '';
-        p = (typeof p === 'undefined' ? 'undefined' : _typeof(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
+        p = (typeof p === 'undefined' ? 'undefined' : (0, _typeof3.default)(p)) === 'object' ? _path2.default.join(p.dir, p.base) : p;
         try {
             rst = _fs2.default.readFileSync(p, 'utf-8');
         } catch (e) {
