@@ -228,7 +228,7 @@ export default {
                     sourceMap = compileResult.map;
                     code = compileResult.code;
                 }
-                rst.scropt.code = code;
+                rst.script.code = code;
             });
         }
 
