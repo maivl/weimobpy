@@ -214,7 +214,7 @@ export default {
         return code;
     },
 
-    compile (lang, code, type, opath, complied) {
+    compile (lang, code, type, opath) {
         let config = util.getConfig();
         src = cache.getSrc();
         dist = cache.getDist();
@@ -225,12 +225,6 @@ export default {
             if (code === null) {
                 throw '打开文件失败: ' + path.join(opath.dir, opath.base);
             }
-        }
-
-
-        if (complied) {
-            afterCompiled();
-            return;
         }
 
         let compiler = loader.loadCompiler(lang);
@@ -247,12 +241,6 @@ export default {
                 sourceMap = compileResult.map;
                 code = compileResult.code;
             }
-            afterCompiled();
-        }).catch((e) => {
-            util.error(e);
-        });
-
-        function afterCompiled(){
             if (type !== 'npm') {
                 if (type === 'page' || type === 'app') {
                     code = code.replace(/exports\.default\s*=\s*(\w+);/ig, function (m, defaultExport) {
@@ -290,12 +278,12 @@ export default {
                 target = path.join(npmPath, path.relative(opath.npm.modulePath, path.join(opath.dir, opath.base)));
             }
 
-            // if (sourceMap) {
-            //     sourceMap.sources = [opath.name + '.js'];
-            //     sourceMap.file = opath.name + '.js';
-            //     var Base64 = require('js-base64').Base64;
-            //     code += `\r\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,${Base64.encode(JSON.stringify(sourceMap))}`;
-            // }
+            if (sourceMap) {
+                sourceMap.sources = [opath.name + '.js'];
+                sourceMap.file = opath.name + '.js';
+                var Base64 = require('js-base64').Base64;
+                code += `\r\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,${Base64.encode(JSON.stringify(sourceMap))}`;
+            }
 
             let plg = new loader.PluginHelper(config.plugins, {
                 type: type,
@@ -311,7 +299,9 @@ export default {
             });
             // 缓存文件修改时间戳
             cache.saveBuildCache();
-        }
+        }).catch((e) => {
+            util.error(e);
+        });
     }
 
 }
